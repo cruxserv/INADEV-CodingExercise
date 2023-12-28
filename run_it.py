@@ -4,13 +4,12 @@ import requests
 
 ## Assumes tf is setup to connect to the AWS account. Also assumes using AWS Direct Connect to
 ##securely connect local environment to the AWS VPC, or this is running from some resource on the VPC,
-##such as an EC2 or Lambda with necessary permissions. AWS CLI should be installed as well.
-
+##such as an EC2 or Lambda with necessary permissions. AWS CLI, Python Requests Module, & Terraform should 
+#be installed as well.
 
 # This function clones the git repo to the computer to use the files for all necessary steps
 def clone_repo(repo_url, local_path):
     subprocess.run(["git", "clone", repo_url, local_path], check=True)
-
 
 # This function will require tf files in the same director as this script
 def run_terraform(terraform_dir):
@@ -20,7 +19,6 @@ def run_terraform(terraform_dir):
     # Runs the terraform commands
     subprocess.run(["terraform", "init"], check=True)
     subprocess.run(["terraform", "apply", "-auto-approve"], check=True)
-
 
 def create_jenkins_pipeline(jenkins_url, job_name, repo_url):
     # Using basic Jenkins API call from https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API
@@ -54,13 +52,11 @@ def create_jenkins_pipeline(jenkins_url, job_name, repo_url):
     )
     return response.status_code
 
-
 def trigger_jenkins_pipeline(jenkins_url, job_name):
     # Trigger the pipeline
     build_url = f"{jenkins_url}:8080/job/{job_name}/build"
     response = requests.post(build_url, auth=("admin", "password"))
     return response.status_code
-
 
 if __name__ == "__main__":
     # May need to adjust based on the configuration of github cloning
